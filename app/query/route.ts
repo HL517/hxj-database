@@ -1,26 +1,17 @@
-// import postgres from 'postgres';
-
-// const sql = postgres(process.env.POSTGRES_URL!, { ssl: 'require' });
-
-// async function listInvoices() {
-// 	const data = await sql`
-//     SELECT invoices.amount, customers.name
-//     FROM invoices
-//     JOIN customers ON invoices.customer_id = customers.id
-//     WHERE invoices.amount = 666;
-//   `;
-
-// 	return data;
-// }
+import { NextResponse } from 'next/server';
+import { sql } from '@vercel/postgres'; // 或用 Prisma，文档用直连方式
 
 export async function GET() {
-  return Response.json({
-    message:
-      'Uncomment this file and remove this line. You can delete this file when you are finished.',
-  });
-  // try {
-  // 	return Response.json(await listInvoices());
-  // } catch (error) {
-  // 	return Response.json({ error }, { status: 500 });
-  // }
+  // 定义 SQL 查询
+  const query = sql`
+    SELECT invoices.amount, customers.name
+    FROM invoices
+    JOIN customers ON invoices.customer_id = customers.id
+    WHERE invoices.amount = 666;
+  `;
+
+  // 执行查询
+  const result = await query;
+  // 返回 JSON 响应
+  return NextResponse.json(result.rows);
 }
